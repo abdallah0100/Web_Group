@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import NavBar from "./components/NavBar";
+import Content from "./components/content/Content";
 
 function App() {
 
   return (
     <div>
-      Hw2
+      <NavBar />
+      <Content />
     </div>
   );
 }
