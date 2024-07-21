@@ -28,7 +28,7 @@ function NavBar({setContent}){
     }, []);
 
     return(
-        <div className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px] border-2">
+        <div className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px] ">
             <button onClick={updateContent("home")}>Home</button>
             <label>|</label>
             <button onClick={updateContent("show_data")} >Show Data</button>
