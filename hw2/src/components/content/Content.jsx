@@ -1,6 +1,11 @@
-function Content(){
+import HomePage from "./HomePage";
+import DisplayData from "./DisplayData";
+function Content({content}){
+    console.log(content)
     return(
-        <div>Content</div>
+        <div>
+            {content == "show_data" ? <DisplayData /> : <HomePage />}
+        </div>
     );
 }
 

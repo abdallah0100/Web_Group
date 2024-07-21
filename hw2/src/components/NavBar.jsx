@@ -1,8 +1,7 @@
 import { useRef, useEffect } from "react";
+function NavBar({setContent}){
 
-function NavBar(){
     const themeButton = useRef();
-
     const toggleTheme = ()=>{
         document.documentElement.classList.toggle("dark");
         if (document.documentElement.classList.contains("dark"))
@@ -10,6 +9,15 @@ function NavBar(){
         else 
             themeButton.current.innerHTML = "Dark Mode";
     }
+
+/**
+ * calling the function directly inside the onClick prop of the buttons causes rendering issue, as it is called on render.
+ *  This results in the setContent function being called during the rendering process, which is not allowed, the solution is to use double functions.
+ */
+    const updateContent = (newContent)=> () => {
+        setContent(newContent);
+    }
+
     //used to set the text in the theme button at the start
     useEffect(() => {
         if (document.documentElement.classList.contains("dark"))
@@ -21,9 +29,9 @@ function NavBar(){
 
     return(
         <div className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px]">
-            <button>Home</button>
+            <button onClick={updateContent("home")}>Home</button>
             <label>|</label>
-            <button>Show Data</button>
+            <button onClick={updateContent("show_data")} >Show Data</button>
             <button className = "float-right" onClick={toggleTheme} ref={themeButton}>theme</button>
         </div>
     );
