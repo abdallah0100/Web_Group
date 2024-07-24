@@ -1,13 +1,65 @@
-////////new 
-import React, { useState } from 'react';
-
+import React, { useState, useRef } from 'react';
+import axios from 'axios';
 function DisplayData() {
     const [showChart, setShowChart] = useState(false);
+    const [chartInstance, setChartInstance] = useState(null);
+
+    //JSON object where the key is the value found in the select drop down of energies, has the indicator and the description of the data
+    const energyIndicators = {'Electric power consumption': {'indicator': 'EG.USE.ELEC.KH.PC', 'description': 'Electric power consumption per person, measured in kilowatt-hours'},
+    'Energy consumption' : {'indicator': 'EG.USE.PCAP.KG.OE', 'description': 'Energy use per person in kilograms of oil equivalent (kgoe)'}
+    };
+    const area = useRef();
+    const energyType = useRef();
+    const chartType = useRef();
+    const ctx = useRef();
 
     const showData = () => {
-        // Example function to toggle chart visibility
-        setShowChart(!showChart);
-        console.log('showed');
+        let indicator = energyIndicators[energyType.current.value].indicator;
+        const apiUrl = `https://api.worldbank.org/v2/country/${area.current.value}/indicator/${indicator}?format=json`;
+    
+        //fetching data from the api
+        axios.get(apiUrl).then(result => {
+            console.log(result.data[1]);
+        
+            let data2 = {
+                labels: [result.data[1][9]['date'], result.data[1][10]['date'], result.data[1][11]['date'], result.data[1][12]['date']],
+                datasets: [{
+                    label: energy.value,
+                    data: [result.data[1][9]['value'], result.data[1][10]['value'], result.data[1][11]['value'], result.data[1][12]['value']],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            let chartSettings = {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            };
+            if (chartInstance)
+                chartInstance.destroy();
+
+            let chart = new Chart(ctx.current.getContext('2d'), {
+                type: chartType.current.value,
+                data: data2,
+                options: chartSettings
+            });
+            setChartInstance(chart)
+            
+            setShowChart(true);
+        }).catch(err => console.log(err));
     };
 
     return (
@@ -21,7 +73,7 @@ function DisplayData() {
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                         <div className="mb-4">
                             <label htmlFor="area" className="text-sm font-medium text-gray-700">Area</label>
-                            <select id="area" className="bg-blue-500 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select ref={area} id='area' className="bg-blue-500 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option>USA</option>
                                 <option>IL</option>
                                 <option>BR</option>
@@ -30,14 +82,14 @@ function DisplayData() {
                         </div>
                         <div className="mb-4">
                             <label htmlFor="energy" className="block text-sm font-medium text-gray-700">Energy type</label>
-                            <select id="energy" className="bg-blue-500 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select ref={energyType} id="energy" className="bg-blue-500 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option>Electric power consumption</option>
                                 <option>Energy consumption</option>
                             </select>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="chart_type" className="block text-sm font-medium text-gray-700">Chart type</label>
-                            <select id="chart_type" className="bg-blue-500 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select ref={chartType} id="chart_type" className="bg-blue-500 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option>pie</option>
                                 <option>bar</option>
                                 <option>line</option>
@@ -47,10 +99,10 @@ function DisplayData() {
                             <button onClick={showData} className="bg-blue-500 text-white py-2 px-8 rounded hover:bg-blue-700">Show</button>
                         </div>
                     </div>
-                    <div id="chartArea" className={`bg-white p-6 rounded-lg shadow-lg w-full md:w-2/3 lg:w-1/2 xl:w-1/3 ${showChart ? '' : 'hidden'}`}>
-                        <div className="relative" style={{ height: '400px' }}>
+                    <div id="chartArea" hidden={!showChart} className={`bg-white p-6 rounded-lg shadow-lg `}>
+                        <div className="relative" style={{ height: '400px', width: '500px' }}>
                             <label id="description">Chart Area</label>
-                            <canvas id="myChart"></canvas>
+                            <canvas ref={ctx} id="myChart"></canvas>
                         </div>
                     </div>
                 </div>
