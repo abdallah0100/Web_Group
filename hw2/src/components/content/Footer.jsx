@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
     return (
-        <footer className="w-full bg-[#77B0AA] dark:bg-[#005f5b] text-[#003C43] dark:text-white p-8">
+        <footer className="w-screen bg-[#77B0AA] dark:bg-[#005f5b] text-[#003C43] dark:text-white p-8">
             <div className="flex justify-around text-center mb-4">
                 <div>
                     <h2 className="text-2xl font-bold mt-6">E.C.M</h2>
