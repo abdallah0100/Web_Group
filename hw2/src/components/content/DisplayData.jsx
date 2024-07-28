@@ -12,6 +12,7 @@ function DisplayData() {
     const energyType = useRef();
     const chartType = useRef();
     const ctx = useRef();
+    const data_desc = useRef();
 
     const showData = () => {
         let indicator = energyIndicators[energyType.current.value].indicator;
@@ -19,7 +20,6 @@ function DisplayData() {
     
         //fetching data from the api
         axios.get(apiUrl).then(result => {
-            console.log(result.data[1]);
         
             let data2 = {
                 labels: [result.data[1][9]['date'], result.data[1][10]['date'], result.data[1][11]['date'], result.data[1][12]['date']],
@@ -57,7 +57,7 @@ function DisplayData() {
                 options: chartSettings
             });
             setChartInstance(chart)
-            
+            data_desc.current.textContent = energyIndicators[energyType.current.value].description;
             setShowChart(true);
         }).catch(err => console.log(err));
     };
@@ -101,7 +101,7 @@ function DisplayData() {
                     </div>
                     <div id="chartArea" hidden={!showChart} className={`bg-white p-6 rounded-lg shadow-lg `}>
                         <div className="relative" style={{ height: '400px', width: '500px' }}>
-                            <label id="description">Chart Area</label>
+                            <label ref={data_desc} className='text-black'>Chart Area</label>
                             <canvas ref={ctx} id="myChart"></canvas>
                         </div>
                     </div>
