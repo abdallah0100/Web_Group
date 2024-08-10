@@ -28,10 +28,16 @@ function NavBar({setContent}){
     }, []);
 
     return(
-        <div className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px] ">
+        <div className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px]">
             <button onClick={updateContent("home")}>Home</button>
             <label>|</label>
             <button onClick={updateContent("show_data")} >Show Data</button>
+            <label>|</label>
+            <button onClick={updateContent("electricity")} >Electricity Data</button>
+            <label>|</label>
+            <button onClick={updateContent("natural_gas")} >Natural Gas</button>
+            <label>|</label>
+            <button >Energy 3</button>
             <button className = "float-right" onClick={toggleTheme} ref={themeButton}>theme</button>
         </div>
     );
