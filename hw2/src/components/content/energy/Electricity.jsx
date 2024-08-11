@@ -1,13 +1,13 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import axios from "axios"
+import { getCheapest5, infoData, get5MostExp } from "../../../utils/DataUtils"
+import ChartComp from "./ChartComp"
 
 function Electricity({title, description}){
-
     const yearArea = useRef()
     const fetchButton = useRef()
     const defaultSelectValue = useRef()
     const selectedInfo = useRef()
-
 
     const checkBoxDiv = useRef()
     const cheapStates = useRef()
@@ -15,6 +15,8 @@ function Electricity({title, description}){
     const msgLabel = useRef()
     const year = useRef()
 
+    const [cheapStatesData, setCheapStatesData] = useState(-1)
+    const [expStatesData, setExpStatesData] = useState(-1)
 
     const onInformationSelect = ()=>{
         yearArea.current.hidden = false
@@ -28,22 +30,10 @@ function Electricity({title, description}){
             checkBoxDiv.current.hidden = true
             fetchButton.current.hidden = false
         }
-
     }
     const onDataRankingSelect = ()=>{
-        fetchButton.current.hidden = cheapStates.current.selected || expStates.current.selected
+        fetchButton.current.hidden = !(cheapStates.current.checked || expStates.current.checked)
     }
-
-    const infoData = {
-        'Retail prices': {
-            apiUrl: "https://api.eia.gov/v2/electricity/state-electricity-profiles/summary/data/?api_key=0elCt43O9HAYcRzX9wMXx5euPbU4PBOtw21LgY22&frequency=annual&data[0]=average-retail-price&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000",
-            desc: ""
-        },
-        'Industry & Commercial Consumption': {
-            apiUrl: "https://api.eia.gov/v2/electricity/state-electricity-profiles/source-disposition/data/?api_key=0elCt43O9HAYcRzX9wMXx5euPbU4PBOtw21LgY22&frequency=annual&data[0]=direct-use&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000",
-            desc: "Industry & Commercial Electricity Consumption"
-        }
-                    }
 
     const fetch = ()=>{
         if (year.current.value > 2023 || year.current.value < 2011){
@@ -54,9 +44,23 @@ function Electricity({title, description}){
         msgLabel.current.hidden = true
         let yearFilter = "&start=" + year.current.value + "&end="+year.current.value
         let url = infoData[selectedInfo.current.value].apiUrl + yearFilter
-        //console.log(url)
-        axios.get(url).then(res => console.log(res)).catch(err => console.log(err))
-    }
+        axios.get(url).then(res => {
+            if (selectedInfo.current.value == "Industry & Commercial Consumption"){
+                console.log("ToDo ...")
+            }else{
+                if (cheapStates.current.checked){
+                    setCheapStatesData(getCheapest5(res.data.response.data))
+                }else{
+                    setCheapStatesData(-1)
+                }
+                if (expStates.current.checked){
+                    setExpStatesData(get5MostExp(res.data.response.data))
+                }else{
+                    setExpStatesData(-1)
+                }
+            }
+        }).catch(err => console.log(err))
+    } 
 
     return(
     <div>
@@ -91,8 +95,9 @@ function Electricity({title, description}){
                 <button hidden className="ml-2" ref={fetchButton} onClick={fetch}>Fetch</button><br />
                 <label ref={msgLabel} hidden></label>
             </p>
-
         </div>
+        <ChartComp title="5 Most Expensive States" data={expStatesData} chartType="bar" id="1" />
+        <ChartComp title="5 Cheapest States" data={cheapStatesData} chartType="bar" id="2" />
     </div>);
 }
 
