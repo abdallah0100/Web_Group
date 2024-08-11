@@ -23,7 +23,7 @@ function HomePage() {
                     
                     <section className="w-2/3 p-6 bg-white bg-opacity-90 dark:bg-gray-800 dark:bg-opacity-90 rounded-lg shadow-lg text-center mb-6">
                         <p className="text-lg text-[#003C43] dark:text-white">
-                            Our app provides comprehensive data on energy consumption to help you monitor and reduce your energy use.
+                            Our app provides comprehensive data on U.S energy consumption
                         </p>
                     </section>
                 </main>

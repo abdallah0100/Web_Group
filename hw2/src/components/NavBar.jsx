@@ -1,5 +1,7 @@
 import { useRef, useEffect } from "react";
-function NavBar({setContent}){
+import { Link } from "react-router-dom"
+
+function NavBar(){
 
     const themeButton = useRef();
     const toggleTheme = ()=>{
@@ -9,15 +11,6 @@ function NavBar({setContent}){
         else 
             themeButton.current.innerHTML = "Dark Mode";
     }
-
-/**
- * calling the function directly inside the onClick prop of the buttons causes rendering issue, as it is called on render.
- *  This results in the setContent function being called during the rendering process, which is not allowed, the solution is to use double functions.
- */
-    const updateContent = (newContent)=> () => {
-        setContent(newContent);
-    }
-
     //used to set the text in the theme button at the start
     useEffect(() => {
         if (document.documentElement.classList.contains("dark"))
@@ -28,18 +21,16 @@ function NavBar({setContent}){
     }, []);
 
     return(
-        <div className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px]">
-            <button onClick={updateContent("home")}>Home</button>
+        <header className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px]">
+            <Link to="/">Home</Link>
             <label>|</label>
-            <button onClick={updateContent("show_data")} >Show Data</button>
+            <Link to="/data">Show Data</Link>
             <label>|</label>
-            <button onClick={updateContent("electricity")} >Electricity Data</button>
+            <Link to="/electricity">Electricty</Link>
             <label>|</label>
-            <button onClick={updateContent("natural_gas")} >Natural Gas</button>
-            <label>|</label>
-            <button >Energy 3</button>
+            <Link to="/natural_gas">Natural Gas</Link>
             <button className = "float-right" onClick={toggleTheme} ref={themeButton}>theme</button>
-        </div>
+        </header>
     );
 }
 
