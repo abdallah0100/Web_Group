@@ -51,7 +51,7 @@ function DataTable({data}) {
 
                 <button 
                     className="py-2 px-4 bg-green-500 text-white rounded disabled:opacity-50"
-                    disabled={index == Math.ceil(data.length/10)}
+                    disabled={index+1 == Math.ceil(data.length/10)}
                     onClick={()=> setIndex(index+1)}
                 >
                     Next
