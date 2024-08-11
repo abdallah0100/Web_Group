@@ -3,16 +3,17 @@ import HomePage from './HomePage';
 import DisplayData from './DisplayData';
 import Electricity from './energy/Electricity';
 import NaturalGas from './energy/NaturalGas';
+import { Route, Routes } from 'react-router-dom';
 
-function Content({ content }) {
+function Content() {
     return (
         <div className="dark:bg-[#003C43] dark:text-white min-h-screen">
-            {
-            content == "show_data" ? <DisplayData /> :
-            content == "electricity" ? <Electricity title="Electricity" description="Some description goes here..."/> :
-            content == "natural_gas" ? <NaturalGas title="Natural Gas" description="Some description goes here..."/>//:
-            //content == "energy3" ? <EnergyDisplayFrame title="Energy 3" description="Some description goes here..."/>
-            : <HomePage />}
+            <Routes>
+                <Route path='/' element={<HomePage />} />
+                <Route path='/data' element={<DisplayData />} />
+                <Route path='/electricity' element={<Electricity />} />
+                <Route path='/natural_gas' element={<NaturalGas />} />
+            </Routes>
         </div>
     );
 }
