@@ -1,17 +1,23 @@
 import { useEffect, useRef, useState } from "react"
 
-function ChartComp({title, data, chartType, id, value}){
+function ChartComp({title, data, chartType, id, label, value}){
     const ctx = useRef()
     const [chartInstance, setChartInstance] = useState(null);
 
     useEffect(()=>{
-        if (data == -1)
+        if (data == -1){
+            if (chartInstance)
+                chartInstance.destroy()
             return
+        }
+        
+        let labels = data.map(item => item[label])
+        let mappedData = data.map(item => item[value])
         let data2 = {
-            labels: [data[0]['stateDescription'], data[1]['stateDescription'], data[2]['stateDescription'], data[3]['stateDescription'], data[4]['stateDescription']],
+            labels: labels,//[data[0][label], data[1][label], data[2][label], data[3][label], data[4][label]],
             datasets: [{
                 label: title,
-                data: [data[0][value], data[1][value], data[2][value], data[3][value], data[4][value]],
+                data: mappedData,//[data[0][value], data[1][value], data[2][value], data[3][value], data[4][value]],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -37,7 +43,7 @@ function ChartComp({title, data, chartType, id, value}){
             }
         }
         if (chartInstance)
-            chartInstance.destroy();
+            chartInstance.destroy()
 
         let chart = new Chart(ctx.current.getContext('2d'), {
             type: chartType,

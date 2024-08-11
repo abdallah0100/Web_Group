@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import axios from "axios"
-import { getCheapest5, infoData, get5MostExp, getTop5Consumption, getLowest5Consumption } from "../../../utils/DataUtils"
+import { getLowest_returnAmount, electricityApiData, getHighest_returnAmount } from "../../../utils/DataUtils"
 import ChartComp from "./ChartComp"
 
 function Electricity({title, description}){
@@ -46,15 +46,15 @@ function Electricity({title, description}){
         msgLabel.current.hidden = true
         let yearFilter = "&start=" + year.current.value + "&end="+year.current.value
         if (selectedInfo.current.value == "Industry & Commercial Consumption" || selectedInfo.current.value == "All"){
-            let url = infoData["Industry & Commercial Consumption"].apiUrl + yearFilter
+            let url = electricityApiData["Industry & Commercial Consumption"].apiUrl + yearFilter
             axios.get(url).then(res => {
                 if (cheapStates.current.checked){
-                    setLowestConsumption(getLowest5Consumption(res.data.response.data))
+                    setLowestConsumption(getLowest_returnAmount(res.data.response.data, "direct-use", 5))
                 }else{
                     setLowestConsumption(-1)
                 }
                 if (expStates.current.checked){
-                    setHighestConsumption(getTop5Consumption(res.data.response.data))
+                    setHighestConsumption(getHighest_returnAmount(res.data.response.data, "direct-use", 5))
                 }else{
                     setHighestConsumption(-1)
                 }
@@ -65,15 +65,15 @@ function Electricity({title, description}){
         }
 
         if (selectedInfo.current.value == "Retail prices" || selectedInfo.current.value == "All"){
-            let url = infoData["Retail prices"].apiUrl + yearFilter
+            let url = electricityApiData["Retail prices"].apiUrl + yearFilter
             axios.get(url).then(res => {
                 if (cheapStates.current.checked){
-                    setCheapStatesData(getCheapest5(res.data.response.data))
+                    setCheapStatesData(getLowest_returnAmount(res.data.response.data, "average-retail-price", 5))
                 }else{
                     setCheapStatesData(-1)
                 }
                 if (expStates.current.checked){
-                    setExpStatesData(get5MostExp(res.data.response.data))
+                    setExpStatesData(getHighest_returnAmount(res.data.response.data, "average-retail-price", 5))
                 }else{
                     setExpStatesData(-1)
                 }
@@ -118,10 +118,10 @@ function Electricity({title, description}){
                 <label ref={msgLabel} hidden></label>
             </p>
         </div>
-        <ChartComp title="5 Most Expensive States" data={expStatesData} chartType="bar" id="1" value="average-retail-price" />
-        <ChartComp title="5 Cheapest States" data={cheapStatesData} chartType="bar" id="2" value="average-retail-price" />
-        <ChartComp title="5 Highest States on Electricity Consumption" data={highestConsumption} chartType="bar" id="3" value="direct-use" />
-        <ChartComp title="5 Lowest States on Electricity Consumption" data={lowestConsumption} chartType="bar" id="4" value="direct-use" />
+        <ChartComp title="5 Most Expensive States" data={expStatesData} chartType="bar" id="1" label="stateDescription" value="average-retail-price" />
+        <ChartComp title="5 Cheapest States" data={cheapStatesData} chartType="bar" id="2" label="stateDescription" value="average-retail-price" />
+        <ChartComp title="5 Highest States on Electricity Consumption" data={highestConsumption} chartType="bar" id="3" label="stateDescription" value="direct-use" />
+        <ChartComp title="5 Lowest States on Electricity Consumption" data={lowestConsumption} chartType="bar" id="4" label="stateDescription" value="direct-use" />
     </div>);
 }
 
