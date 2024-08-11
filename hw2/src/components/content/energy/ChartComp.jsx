@@ -5,8 +5,11 @@ function ChartComp({title, data, chartType, id, value}){
     const [chartInstance, setChartInstance] = useState(null);
 
     useEffect(()=>{
-        if (data == -1)
+        if (data == -1){
+            if (chartInstance)
+                chartInstance.destroy()
             return
+        }
         let data2 = {
             labels: [data[0]['stateDescription'], data[1]['stateDescription'], data[2]['stateDescription'], data[3]['stateDescription'], data[4]['stateDescription']],
             datasets: [{
@@ -37,7 +40,7 @@ function ChartComp({title, data, chartType, id, value}){
             }
         }
         if (chartInstance)
-            chartInstance.destroy();
+            chartInstance.destroy()
 
         let chart = new Chart(ctx.current.getContext('2d'), {
             type: chartType,
