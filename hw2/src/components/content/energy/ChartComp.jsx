@@ -10,6 +10,7 @@ function ChartComp({title, data, chartType, id, label, value}){
                 chartInstance.destroy()
             return
         }
+        
         let labels = data.map(item => item[label])
         let mappedData = data.map(item => item[value])
         let data2 = {
