@@ -46,12 +46,12 @@ function DataTable({data}) {
                 </button>
 
                 <span className="dark:text-green-600 border-2 border-green-600 py-2 px-4 rounded">
-                    Page {index} of {data.length/10}
+                    Page {index + 1} of {Math.ceil(data.length/10)}
                 </span>
 
                 <button 
                     className="py-2 px-4 bg-green-500 text-white rounded disabled:opacity-50"
-                    disabled={index == data.length/10}
+                    disabled={index+1 == Math.ceil(data.length/10)}
                     onClick={()=> setIndex(index+1)}
                 >
                     Next
