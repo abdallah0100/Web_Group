@@ -1,44 +1,77 @@
-import { useRef, useEffect } from "react";
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function NavBar(){
+function NavBar() {
+    const [isOpen, setIsOpen] = useState(false); // State to manage menu open/close
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        return localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }); // State to track theme mode
 
-    const themeButton = useRef();
-    const toggleTheme = ()=>{
-        document.documentElement.classList.toggle("dark");
-        if (document.documentElement.classList.contains("dark"))
-            themeButton.current.innerHTML = "Light Mode";
-        else 
-            themeButton.current.innerHTML = "Dark Mode";
-    }
-    //used to set the text in the theme button at the start
     useEffect(() => {
-        if (document.documentElement.classList.contains("dark"))
-            themeButton.current.innerHTML = "Light Mode";
-         else
-            themeButton.current.innerHTML = "Dark Mode";
-        
-    }, []);
+        // Apply the initial theme when the component mounts
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [isDarkMode]);
 
-    return(
-        <header className="dark:bg-gray-800 p-4 shadow-lg dark:text-white space-x-[25px]">
-            <Link to="/">Home</Link>
-            <label>|</label>
-            <Link to="/electricity">Electricty</Link>
-            <label>|</label>
-            <Link to="/natural_gas">Natural Gas</Link>
-            <label>|</label>
-            <Link to="/international">International Energy Data</Link>
-           
-            <label>|</label>
-            <Link to="/about">About</Link>
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
 
+    const toggleTheme = () => {
+        const isDark = !isDarkMode;
+        setIsDarkMode(isDark);
+        document.documentElement.classList.toggle("dark", isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    };
 
-            <label>|</label>
-            <Link to="/contact">Contact</Link>
+    return (
+        <header className={`p-4 shadow-lg ${isDarkMode ? 'dark:bg-gray-800 dark:text-white' : 'bg-white text-black'}`}>
+            <div className="flex justify-between items-center flex-wrap">
+                <div className="w-full flex justify-between items-center">
+                    <div className="flex items-center">
+                        <div
+                            className={`flex flex-col cursor-pointer sm:hidden ${isDarkMode ? 'dark-hamburger' : 'light-hamburger'}`}
+                            onClick={toggleMenu}
+                        >
+                            <div className="w-6 h-0.5 bg-current mb-1"></div>
+                            <div className="w-6 h-0.5 bg-current mb-1"></div>
+                            <div className="w-6 h-0.5 bg-current"></div>
+                        </div>
+                        <nav className={`hidden sm:flex sm:flex-row items-center`}>
+                            <Link to="/" className="block py-2 sm:py-0 sm:mr-4">Home</Link>
+                            <span className="hidden sm:block">|</span>
+                            <Link to="/electricity" className="block py-2 sm:py-0 sm:ml-4 sm:mr-4">Electricity</Link>
+                            <span className="hidden sm:block">|</span>
+                            <Link to="/natural_gas" className="block py-2 sm:py-0 sm:ml-4 sm:mr-4">Natural Gas</Link>
+                            <span className="hidden sm:block">|</span>
+                            <Link to="/international" className="block py-2 sm:py-0 sm:ml-4 sm:mr-4">International Energy Data</Link>
+                            <span className="hidden sm:block">|</span>
+                            <Link to="/about" className="block py-2 sm:py-0 sm:ml-4 sm:mr-4">About Us</Link>
+                            <span className="hidden sm:block">|</span>
+                            <Link to="/contact" className="block py-2 sm:py-0 sm:ml-4">Contact</Link>
+                        </nav>
+                    </div>
+                    <button className="float-right" onClick={toggleTheme}>
+                        {isDarkMode ? "Light Mode" : "Dark Mode"}
+                    </button>
+                </div>
 
-
-            <button className = "float-right" onClick={toggleTheme} ref={themeButton}>theme</button>
+                {/* Mobile Menu */}
+                <nav className={`sm:hidden w-full ${isOpen ? 'block' : 'hidden'} bg-white dark:bg-gray-800 p-4`}>
+                    <div className="flex flex-col items-center gap-4">
+                        <Link to="/" className="block py-2 text-center">Home</Link>
+                        <Link to="/electricity" className="block py-2 text-center">Electricity</Link>
+                        <Link to="/natural_gas" className="block py-2 text-center">Natural Gas</Link>
+                        <Link to="/international" className="block py-2 text-center">International Energy Data</Link>
+                        <Link to="/about" className="block py-2 text-center">About Us</Link>
+                        <Link to="/contact" className="block py-2 text-center">Contact</Link>
+                    </div>
+                </nav>
+            </div>
         </header>
     );
 }
