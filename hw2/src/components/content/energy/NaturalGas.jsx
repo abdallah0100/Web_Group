@@ -16,6 +16,7 @@ function NaturalGas({title, description}){
             <p>{description}</p>
         </div>
         <div className="pt-5 p-6">
+            <center><img src="./loading.gif" width={100} height={100} hidden={processTypes != -1} /></center>
             <ChartComp title="U.S Natural Gas Processing Categories" data={processTypes} chartType="pie" id="1" label="process-name" value="occurrence" />
         </div>
     </div>)

@@ -118,6 +118,7 @@ function Electricity({title, description}){
                 <label ref={msgLabel} hidden></label>
             </p>
         </div>
+        <center><img src="./loading.gif" width={100} height={100} hidden={expStatesData != -1  || cheapStatesData != -1 || highestConsumption != -1 || lowestConsumption != -1} /></center>
         <ChartComp title="5 Most Expensive States" data={expStatesData} chartType="bar" id="1" label="stateDescription" value="average-retail-price" />
         <ChartComp title="5 Cheapest States" data={cheapStatesData} chartType="bar" id="2" label="stateDescription" value="average-retail-price" />
         <ChartComp title="5 Highest States on Electricity Consumption" data={highestConsumption} chartType="bar" id="3" label="stateDescription" value="direct-use" />
