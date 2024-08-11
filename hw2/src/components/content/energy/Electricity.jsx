@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import axios from "axios"
-import { getCheapest5, infoData, get5MostExp } from "../../../utils/DataUtils"
+import { getCheapest5, infoData, get5MostExp, getTop5Consumption, getLowest5Consumption } from "../../../utils/DataUtils"
 import ChartComp from "./ChartComp"
 
 function Electricity({title, description}){
@@ -17,19 +17,21 @@ function Electricity({title, description}){
 
     const [cheapStatesData, setCheapStatesData] = useState(-1)
     const [expStatesData, setExpStatesData] = useState(-1)
+    const [lowestConsumption, setLowestConsumption] = useState(-1)
+    const [highestConsumption, setHighestConsumption] = useState(-1)
 
     const onInformationSelect = ()=>{
         yearArea.current.hidden = false
         defaultSelectValue.current.disabled = true
+        setLowestConsumption(-1)
+        setHighestConsumption(-1)
+        setCheapStatesData(-1)
+        setExpStatesData(-1)
     }
     const onYearInput = ()=>{
-        if (selectedInfo.current.value == "Retail prices"){
-            checkBoxDiv.current.hidden = false
-            fetchButton.current.hidden = true
-        }else{
-            checkBoxDiv.current.hidden = true
-            fetchButton.current.hidden = false
-        }
+        checkBoxDiv.current.hidden = false
+        fetchButton.current.hidden = true
+        onDataRankingSelect() // added to double check if the user changes the info type
     }
     const onDataRankingSelect = ()=>{
         fetchButton.current.hidden = !(cheapStates.current.checked || expStates.current.checked)
@@ -43,11 +45,28 @@ function Electricity({title, description}){
         }
         msgLabel.current.hidden = true
         let yearFilter = "&start=" + year.current.value + "&end="+year.current.value
-        let url = infoData[selectedInfo.current.value].apiUrl + yearFilter
-        axios.get(url).then(res => {
-            if (selectedInfo.current.value == "Industry & Commercial Consumption"){
-                console.log("ToDo ...")
-            }else{
+        if (selectedInfo.current.value == "Industry & Commercial Consumption" || selectedInfo.current.value == "All"){
+            let url = infoData["Industry & Commercial Consumption"].apiUrl + yearFilter
+            axios.get(url).then(res => {
+                if (cheapStates.current.checked){
+                    setLowestConsumption(getLowest5Consumption(res.data.response.data))
+                }else{
+                    setLowestConsumption(-1)
+                }
+                if (expStates.current.checked){
+                    setHighestConsumption(getTop5Consumption(res.data.response.data))
+                }else{
+                    setHighestConsumption(-1)
+                }
+            }).catch(err => console.log(err))
+        } else {
+            setLowestConsumption(-1)
+            setHighestConsumption(-1)
+        }
+
+        if (selectedInfo.current.value == "Retail prices" || selectedInfo.current.value == "All"){
+            let url = infoData["Retail prices"].apiUrl + yearFilter
+            axios.get(url).then(res => {
                 if (cheapStates.current.checked){
                     setCheapStatesData(getCheapest5(res.data.response.data))
                 }else{
@@ -58,8 +77,11 @@ function Electricity({title, description}){
                 }else{
                     setExpStatesData(-1)
                 }
-            }
-        }).catch(err => console.log(err))
+            }).catch(err => console.log(err))
+        }else {
+            setCheapStatesData(-1)
+            setExpStatesData(-1)
+        }
     } 
 
     return(
@@ -83,11 +105,11 @@ function Electricity({title, description}){
                 <ul onChange={onDataRankingSelect}>
                     <li>
                         <input ref={expStates} type="checkbox" id="top5_expensive" />
-                        <label htmlFor="top5_expensive" className="ml-2">Most Expensive 5 states</label>
+                        <label htmlFor="top5_expensive" className="ml-2">Top 5 states</label>
                     </li>
                     <li>
                         <input ref={cheapStates} type="checkbox" id="top5_cheap" />
-                        <label htmlFor="top5_cheap" className="ml-2">Cheapest 5 states</label>
+                        <label htmlFor="top5_cheap" className="ml-2">Lowest 5 States</label>
                     </li>
                 </ul>
             </div>
@@ -96,8 +118,10 @@ function Electricity({title, description}){
                 <label ref={msgLabel} hidden></label>
             </p>
         </div>
-        <ChartComp title="5 Most Expensive States" data={expStatesData} chartType="bar" id="1" />
-        <ChartComp title="5 Cheapest States" data={cheapStatesData} chartType="bar" id="2" />
+        <ChartComp title="5 Most Expensive States" data={expStatesData} chartType="bar" id="1" value="average-retail-price" />
+        <ChartComp title="5 Cheapest States" data={cheapStatesData} chartType="bar" id="2" value="average-retail-price" />
+        <ChartComp title="5 Highest States on Electricity Consumption" data={highestConsumption} chartType="bar" id="3" value="direct-use" />
+        <ChartComp title="5 Lowest States on Electricity Consumption" data={lowestConsumption} chartType="bar" id="4" value="direct-use" />
     </div>);
 }
 

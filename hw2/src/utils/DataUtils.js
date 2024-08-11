@@ -8,6 +8,15 @@ export function get5MostExp(data){
     return sortedData.slice(0,5)
 }
 
+export function getTop5Consumption(data){
+    const sortedData = data.sort((element1, element2) => element2['direct-use'] - element1['direct-use'])
+    return sortedData.slice(0,5)
+}
+export function getLowest5Consumption(data){
+    const sortedData = data.sort((element1, element2) => element1['direct-use'] - element2['direct-use'])
+    return sortedData.slice(0,5)
+}
+
 export const infoData = {
     'Retail prices': {
         apiUrl: "https://api.eia.gov/v2/electricity/state-electricity-profiles/summary/data/?api_key=0elCt43O9HAYcRzX9wMXx5euPbU4PBOtw21LgY22&frequency=annual&data[0]=average-retail-price&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000",

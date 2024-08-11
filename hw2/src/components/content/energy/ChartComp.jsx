@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
-function ChartComp({title, data, chartType, id}){
+function ChartComp({title, data, chartType, id, value}){
     const ctx = useRef()
     const [chartInstance, setChartInstance] = useState(null);
 
@@ -11,7 +11,7 @@ function ChartComp({title, data, chartType, id}){
             labels: [data[0]['stateDescription'], data[1]['stateDescription'], data[2]['stateDescription'], data[3]['stateDescription'], data[4]['stateDescription']],
             datasets: [{
                 label: title,
-                data: [data[0]['average-retail-price'], data[1]['average-retail-price'], data[2]['average-retail-price'], data[3]['average-retail-price'], data[4]['average-retail-price']],
+                data: [data[0][value], data[1][value], data[2][value], data[3][value], data[4][value]],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
