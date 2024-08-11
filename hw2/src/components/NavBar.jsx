@@ -29,6 +29,15 @@ function NavBar(){
             <Link to="/natural_gas">Natural Gas</Link>
             <label>|</label>
             <Link to="/international">International Energy Data</Link>
+           
+            <label>|</label>
+            <Link to="/about">About</Link>
+
+
+            <label>|</label>
+            <Link to="/contact">Contact</Link>
+
+
             <button className = "float-right" onClick={toggleTheme} ref={themeButton}>theme</button>
         </header>
     );
