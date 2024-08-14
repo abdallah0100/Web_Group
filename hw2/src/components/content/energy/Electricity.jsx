@@ -19,6 +19,7 @@ function Electricity() {
     const [expStatesData, setExpStatesData] = useState(-1);
     const [lowestConsumption, setLowestConsumption] = useState(-1);
     const [highestConsumption, setHighestConsumption] = useState(-1);
+    const [loading, updateLoading] = useState(true)
 
     const onInformationSelect = () => {
         yearArea.current.hidden = false;
@@ -45,7 +46,9 @@ function Electricity() {
             msgLabel.current.hidden = false;
             return;
         }
+        updateLoading(false)
         msgLabel.current.hidden = true;
+        //let lowestConsumptions, highestConsumptions, cheapestStates, expensiveStates
         let yearFilter = "&start=" + year.current.value + "&end=" + year.current.value;
         if (selectedInfo.current.value === "Industry & Commercial Consumption" || selectedInfo.current.value === "All") {
             let url = electricityApiData["Industry & Commercial Consumption"].apiUrl + yearFilter;
@@ -84,6 +87,7 @@ function Electricity() {
             setCheapStatesData(-1);
             setExpStatesData(-1);
         }
+        updateLoading(true)
     };
 
     return (
@@ -161,7 +165,7 @@ function Electricity() {
             </div>
 
             {/* Loading and Charts Section */}
-            <center><img src="./loading.gif" width={100} height={100} hidden={expStatesData !== -1 || cheapStatesData !== -1 || highestConsumption !== -1 || lowestConsumption !== -1} alt="Loading" /></center>
+            <center><img src="./loading.gif" width={100} height={100} hidden={loading} alt="Loading" /></center>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ChartComp 
                     title="5 Most Expensive States" 

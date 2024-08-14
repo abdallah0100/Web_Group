@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-function DataTable({data}) {
+function DataTable({data, index, setIndex, loading}) {
 
-    const[index, setIndex] = useState(0)
     const[dataToDisplay, setDataToDisplay] = useState([]);
 
     useEffect(()=>{
         if (Array.isArray(data))
             setDataToDisplay(data.slice(index*10, 10*(index + 1)))
+        
     }, [index, data])
     return (
         <div className="container mx-auto p-4">
@@ -58,7 +58,7 @@ function DataTable({data}) {
                 </button>
             </div>
                  </div> : <center>
-                        <label>Data was not found!</label>
+                        <label hidden={!loading}>Data was not found!</label>
                             </center>}
             </div>
         </div>
