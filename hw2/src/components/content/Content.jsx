@@ -9,7 +9,7 @@ import Contact from './energy/Contact';
 
 function Content() {
     return (
-        <div className="dark:bg-[#003C43] dark:text-white min-h-screen">
+        <div className="dark:bg-gray-900 dark:text-gray-200 min-h-screen">
             <Routes>
                 <Route path='/' element={<HomePage />} />
                 <Route path='/electricity' element={<Electricity />} />

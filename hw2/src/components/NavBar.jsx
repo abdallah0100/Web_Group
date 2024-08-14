@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function NavBar() {
-    const [isOpen, setIsOpen] = useState(false); // State to manage menu open/close
+    const [isOpen, setIsOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         return localStorage.getItem('theme') === 'dark' ||
             (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }); // State to track theme mode
+    });
 
     useEffect(() => {
-        // Apply the initial theme when the component mounts
         if (isDarkMode) {
             document.documentElement.classList.add('dark');
         } else {
@@ -29,7 +28,7 @@ function NavBar() {
     };
 
     return (
-        <header className={`p-4 shadow-lg ${isDarkMode ? 'dark:bg-gray-800 dark:text-white' : 'bg-white text-black'}`}>
+        <header className={`p-4 shadow-lg ${isDarkMode ? 'dark:bg-gray-900 dark:text-gray-200' : 'bg-white text-black'}`}>
             <div className="flex justify-between items-center flex-wrap">
                 <div className="w-full flex justify-between items-center">
                     <div className="flex items-center">
@@ -61,7 +60,7 @@ function NavBar() {
                 </div>
 
                 {/* Mobile Menu */}
-                <nav className={`sm:hidden w-full ${isOpen ? 'block' : 'hidden'} bg-white dark:bg-gray-800 p-4`}>
+                <nav className={`sm:hidden w-full ${isOpen ? 'block' : 'hidden'} bg-white dark:bg-gray-900 p-4`}>
                     <div className="flex flex-col items-center gap-4">
                         <Link to="/" className="block py-2 text-center">Home</Link>
                         <Link to="/electricity" className="block py-2 text-center">Electricity</Link>
