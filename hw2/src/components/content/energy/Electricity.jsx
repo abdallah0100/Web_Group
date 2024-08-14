@@ -3,7 +3,7 @@ import axios from "axios";
 import { getLowest_returnAmount, electricityApiData, getHighest_returnAmount } from "../../../utils/DataUtils";
 import ChartComp from "./ChartComp";
 
-function Electricity({ title, description }) {
+function Electricity() {
     const yearArea = useRef();
     const fetchButton = useRef();
     const defaultSelectValue = useRef();
