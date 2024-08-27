@@ -17,8 +17,6 @@ function ChartComp({ title, data, chartType, id, label, value }) {
       return;
     }
 
-    console.log("[chartComp] - id: " + id + " title: " + title)
-
     let labels = data.map(item => item[label]);
     let mappedData = data.map(item => item[value]);
 
