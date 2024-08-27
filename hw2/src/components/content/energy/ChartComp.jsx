@@ -9,12 +9,15 @@ function ChartComp({ title, data, chartType, id, label, value }) {
   const ctx = useRef();  // Reference to the canvas element
   const [chartInstance, setChartInstance] = useState(null);  // State to manage the chart instance
 
+
   // Effect to create or update the chart whenever data changes
   useEffect(() => {
-    if (data == -1) {
+    if (!data) {
       if (chartInstance) chartInstance.destroy();  // Destroy the chart if data is invalid
       return;
     }
+
+    console.log("[chartComp] - id: " + id + " title: " + title)
 
     let labels = data.map(item => item[label]);
     let mappedData = data.map(item => item[value]);
@@ -62,6 +65,10 @@ function ChartComp({ title, data, chartType, id, label, value }) {
     });
 
     setChartInstance(chart);  // Update the chart instance state
+
+    return () => {
+      chart.destroy();  // Cleanup on unmount
+    };
   }, [data]);
 
   return (
