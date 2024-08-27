@@ -1,6 +1,5 @@
 import React from 'react';
 import HomePage from './HomePage';
-import Electricity from './energy/Electricity';
 import NaturalGas from './energy/NaturalGas';
 import { Route, Routes } from 'react-router-dom';
 import International from './energy/International';
