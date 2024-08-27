@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+// NavBar component
 function NavBar() {
+    // State to manage whether the mobile menu is open
     const [isOpen, setIsOpen] = useState(false);
+
+    // State to manage whether dark mode is enabled
     const [isDarkMode, setIsDarkMode] = useState(() => {
         return localStorage.getItem('theme') === 'dark' ||
             (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     });
 
+    // Effect to add or remove dark mode class based on isDarkMode state
     useEffect(() => {
         if (isDarkMode) {
             document.documentElement.classList.add('dark');
@@ -16,10 +21,12 @@ function NavBar() {
         }
     }, [isDarkMode]);
 
+    // Function to toggle the mobile menu
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
 
+    // Function to toggle the theme between dark and light mode
     const toggleTheme = () => {
         const isDark = !isDarkMode;
         setIsDarkMode(isDark);
@@ -32,6 +39,7 @@ function NavBar() {
             <div className="flex justify-between items-center flex-wrap">
                 <div className="w-full flex justify-between items-center">
                     <div className="flex items-center">
+                        {/* Hamburger menu icon for mobile view */}
                         <div
                             className={`flex flex-col cursor-pointer sm:hidden ${isDarkMode ? 'dark-hamburger' : 'light-hamburger'}`}
                             onClick={toggleMenu}
@@ -40,6 +48,8 @@ function NavBar() {
                             <div className="w-6 h-0.5 bg-current mb-1"></div>
                             <div className="w-6 h-0.5 bg-current"></div>
                         </div>
+
+                        {/* Navigation links for desktop view */}
                         <nav className={`hidden sm:flex sm:flex-row items-center`}>
                             <Link to="/" className="block py-2 sm:py-0 sm:mr-4">Home</Link>
                             <span className="hidden sm:block">|</span>
@@ -54,6 +64,7 @@ function NavBar() {
                             <Link to="/contact" className="block py-2 sm:py-0 sm:ml-4">Contact</Link>
                         </nav>
                     </div>
+                    {/* Button to toggle between dark mode and light mode */}
                     <button className="float-right" onClick={toggleTheme}>
                         {isDarkMode ? "Light Mode" : "Dark Mode"}
                     </button>

@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Chart, registerables } from 'chart.js';
 
-// Register necessary components
+// Register necessary components for Chart.js
 Chart.register(...registerables);
 
+// ChartComp component for rendering charts
 function ChartComp({ title, data, chartType, id, label, value }) {
-  const ctx = useRef();
-  const [chartInstance, setChartInstance] = useState(null);
+  const ctx = useRef();  // Reference to the canvas element
+  const [chartInstance, setChartInstance] = useState(null);  // State to manage the chart instance
 
+  // Effect to create or update the chart whenever data changes
   useEffect(() => {
     if (data == -1) {
-      if (chartInstance) chartInstance.destroy();
+      if (chartInstance) chartInstance.destroy();  // Destroy the chart if data is invalid
       return;
     }
 
@@ -44,27 +46,28 @@ function ChartComp({ title, data, chartType, id, label, value }) {
       scales: {
         y: {
           beginAtZero: true,
-          type: 'linear',  // This is likely where the issue was
+          type: 'linear',  // Ensure the y-axis starts at zero
         }
       },
-      maintainAspectRatio: false
+      maintainAspectRatio: false  // Allow the chart to be responsive
     };
 
-    if (chartInstance) chartInstance.destroy();
+    if (chartInstance) chartInstance.destroy();  // Destroy the previous chart instance
 
+    // Create a new chart instance
     let chart = new Chart(ctx.current.getContext('2d'), {
       type: chartType,
       data: data2,
       options: chartSettings
     });
 
-    setChartInstance(chart);
+    setChartInstance(chart);  // Update the chart instance state
   }, [data]);
 
   return (
     <div className="flex justify-center items-center my-8">
       <div className="w-full max-w-lg h-96">
-        <canvas ref={ctx} id={"chart" + id} className="mx-auto"></canvas>
+        <canvas ref={ctx} id={"chart" + id} className="mx-auto"></canvas>  {/* Canvas element for the chart */}
       </div>
     </div>
   );

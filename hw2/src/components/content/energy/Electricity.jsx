@@ -3,24 +3,27 @@ import axios from "axios";
 import { getLowest_returnAmount, electricityApiData, getHighest_returnAmount } from "../../../utils/DataUtils";
 import ChartComp from "./ChartComp";
 
+// Electricity component
 function Electricity() {
+    // References to various DOM elements
     const yearArea = useRef();
     const fetchButton = useRef();
     const defaultSelectValue = useRef();
     const selectedInfo = useRef();
-
     const checkBoxDiv = useRef();
     const cheapStates = useRef();
     const expStates = useRef();
     const msgLabel = useRef();
     const year = useRef();
 
+    // State variables to manage data and loading state
     const [cheapStatesData, setCheapStatesData] = useState(-1);
     const [expStatesData, setExpStatesData] = useState(-1);
     const [lowestConsumption, setLowestConsumption] = useState(-1);
     const [highestConsumption, setHighestConsumption] = useState(-1);
-    const [loading, updateLoading] = useState(true)
+    const [loading, updateLoading] = useState(true);
 
+    // Function called when information type is selected
     const onInformationSelect = () => {
         yearArea.current.hidden = false;
         defaultSelectValue.current.disabled = true;
@@ -30,26 +33,31 @@ function Electricity() {
         setExpStatesData(-1);
     };
 
+    // Function called when the year is inputted
     const onYearInput = () => {
         checkBoxDiv.current.hidden = false;
         fetchButton.current.hidden = true;
-        onDataRankingSelect(); // added to double check if the user changes the info type
+        onDataRankingSelect(); // double-check if the user changes the info type
     };
 
+    // Function called when data ranking options are selected
     const onDataRankingSelect = () => {
         fetchButton.current.hidden = !(cheapStates.current.checked || expStates.current.checked);
     };
 
+    // Function to fetch data from the API
     const fetch = () => {
+        // Validate the year input
         if (year.current.value > 2023 || year.current.value < 2011) {
             msgLabel.current.textContent = "Invalid year input, please input 2011-2023";
             msgLabel.current.hidden = false;
             return;
         }
-        updateLoading(false)
+        updateLoading(false);
         msgLabel.current.hidden = true;
-        //let lowestConsumptions, highestConsumptions, cheapestStates, expensiveStates
         let yearFilter = "&start=" + year.current.value + "&end=" + year.current.value;
+
+        // Fetch data for Industry & Commercial Consumption
         if (selectedInfo.current.value === "Industry & Commercial Consumption" || selectedInfo.current.value === "All") {
             let url = electricityApiData["Industry & Commercial Consumption"].apiUrl + yearFilter;
             axios.get(url).then(res => {
@@ -69,6 +77,7 @@ function Electricity() {
             setHighestConsumption(-1);
         }
 
+        // Fetch data for Retail prices
         if (selectedInfo.current.value === "Retail prices" || selectedInfo.current.value === "All") {
             let url = electricityApiData["Retail prices"].apiUrl + yearFilter;
             axios.get(url).then(res => {
@@ -87,7 +96,7 @@ function Electricity() {
             setCheapStatesData(-1);
             setExpStatesData(-1);
         }
-        updateLoading(true)
+        updateLoading(true);
     };
 
     return (
@@ -116,6 +125,7 @@ function Electricity() {
                     </select>
                 </div>
 
+                {/* Year Input Section */}
                 <div className="mb-4" ref={yearArea} hidden>
                     <label htmlFor="yearInput" className="text-lg font-semibold">Enter Year:</label>
                     <input
@@ -127,6 +137,7 @@ function Electricity() {
                     />
                 </div>
 
+                {/* Data Ranking Selection Section */}
                 <div hidden ref={checkBoxDiv} className="mb-4">
                     <ul onChange={onDataRankingSelect}>
                         <li className="flex items-center mb-2">
@@ -150,6 +161,7 @@ function Electricity() {
                     </ul>
                 </div>
 
+                {/* Fetch Button */}
                 <div className="flex items-center">
                     <button
                         hidden

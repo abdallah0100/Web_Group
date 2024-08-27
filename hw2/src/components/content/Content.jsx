@@ -7,9 +7,11 @@ import International from './energy/International';
 import About from './energy/About';
 import Contact from './energy/Contact';
 
+// Content component handles routing for different pages
 function Content() {
     return (
         <div className="dark:bg-gray-900 dark:text-gray-200 min-h-screen">
+            {/* Routes for different pages */}
             <Routes>
                 <Route path='/' element={<HomePage />} />
                 <Route path='/electricity' element={<Electricity />} />
