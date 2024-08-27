@@ -3,9 +3,10 @@ import HomePage from './HomePage';
 import NaturalGas from './energy/NaturalGas';
 import { Route, Routes } from 'react-router-dom';
 import International from './energy/International';
-import About from './energy/About';
-import Contact from './energy/Contact';
+import About from './About';
+import Contact from './Contact';
 import EnergyPage from './energy/EnergyPage';
+import Test from './energy/Test';
 
 // Content component handles routing for different pages
 function Content() {
@@ -15,11 +16,11 @@ function Content() {
             <Routes>
                 <Route path='/' element={<HomePage />} />
                 <Route path='/electricity' element={<EnergyPage energyType='electricity'/>} />
-                <Route path='/natural_gas' element={<NaturalGas />} />
+                <Route path='/natural_gas' element={<EnergyPage energyType='natural_gas' />} />
                 <Route path='/international' element={<International />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />
-                <Route path='/test' element={<EnergyPage energyType='electricity'/>}/>
+                <Route path='/test' element={<Test />}/>
             </Routes>
         </div>
     );

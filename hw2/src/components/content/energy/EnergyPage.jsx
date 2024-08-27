@@ -6,7 +6,8 @@ import ChartComp from "./ChartComp"
 
 function EnergyPage({energyType, OtherComponent}){
     const yearArea = useRef()
-    const year = useRef()
+    const startYear = useRef()
+    const endYear = useRef()
     const defaultSelectValue = useRef()
     const selectedInfo = useRef()
     const checkBoxDiv = useRef()
@@ -16,12 +17,11 @@ function EnergyPage({energyType, OtherComponent}){
     const msgLabel = useRef()
     const [loading, updateLoading] = useState(false);
 
-
     const [data, setData] = useState(null)
     const [fetchedData, updateFetchedData] = useState([])
     useEffect(()=>{
         setData(energyData[energyType])
-    }, [])
+    }, [energyType])
 
     const onInfoSelect = ()=>{
         yearArea.current.hidden = false
@@ -37,13 +37,15 @@ function EnergyPage({energyType, OtherComponent}){
     }
 
     const fetchData = async () => {
-        if (year.current.value > 2023 || year.current.value < 2011) {
-            msgLabel.current.textContent = "Invalid year input, please input 2011-2023";
+        if (startYear.current.value > 2024 || endYear.current.value > 2024 || startYear.current.value >= endYear.current.value 
+            || startYear.current.value < 2010 || endYear.current.value < 2010) {
+            msgLabel.current.textContent = "Invalid year input, please input 2010-2024";
             msgLabel.current.hidden = false;
             return;
         }
     
-        updateLoading(true);
+        updateLoading(true)
+        msgLabel.current.hidden = true
         let tempData;
         if (selectedInfo.current.value !== "All") {
             tempData = energyData[energyType].info.filter(item => item.name === selectedInfo.current.value);
@@ -53,13 +55,12 @@ function EnergyPage({energyType, OtherComponent}){
     
         updateFetchedData([]); // Clear previous data
     
-        let yearFilter = "&start=" + year.current.value + "&end=" + year.current.value;
+        let yearFilter = "&start=" + startYear.current.value + "&end=" + endYear.current.value;
     
         // Use Promise.all to ensure all data is fetched before updating the state
         const promises = tempData.map(async (element) => {
             const res = await axios.get(element.apiUrl + yearFilter);
             const newData = [];
-    
             if (lowest5.current.checked) {
                 newData.push({
                     data: getLowest_returnAmount(res.data.response.data, element.valueName, 5),
@@ -89,7 +90,6 @@ function EnergyPage({energyType, OtherComponent}){
         updateLoading(false);
     };
     
-
     return(<>
         <div hidden={data? false : true}>
                 {/* Title and Description Section */}
@@ -116,12 +116,21 @@ function EnergyPage({energyType, OtherComponent}){
                     </div>
                     {/* Year Input Section */}
                     <div className="mb-4" ref={yearArea} hidden>
-                        <label htmlFor="yearInput" className="text-lg font-semibold">Enter Year:</label>
+                        <label htmlFor="yearInput" className="text-lg font-semibold">From :</label>
                         <input
-                            ref={year}
+                            ref={startYear}
                             onChange={onYearInput}
                             type="number"
                             id="yearInput"
+                            placeholder="Year: 2024"
+                            className="ml-2 mt-1 bg-blue-600 py-2 px-4 border border-blue-600 focus:outline-none focus:ring focus:ring-blue-300 focus:border-blue-500 rounded-lg"
+                        />
+                        <label>   To:</label>
+                        <input
+                            ref={endYear}
+                            onChange={onYearInput}
+                            type="number"
+                            placeholder="Year: 2025"
                             className="ml-2 mt-1 bg-blue-600 py-2 px-4 border border-blue-600 focus:outline-none focus:ring focus:ring-blue-300 focus:border-blue-500 rounded-lg"
                         />
                     </div>
@@ -135,7 +144,7 @@ function EnergyPage({energyType, OtherComponent}){
                                     id="top5_expensive"
                                     className="mr-2 h-5 w-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring focus:ring-blue-300"
                                 />
-                                <label htmlFor="top5_expensive" className="text-lg font-semibold">Top 5 States</label>
+                                <label htmlFor="top5_expensive" className="text-lg font-semibold">Filter by Top 5</label>
                             </li>
                             <li className="flex items-center">
                                 <input
@@ -144,7 +153,7 @@ function EnergyPage({energyType, OtherComponent}){
                                     id="top5_cheap"
                                     className="mr-2 h-5 w-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring focus:ring-blue-300"
                                 />
-                                <label htmlFor="top5_cheap" className="text-lg font-semibold">Lowest 5 States</label>
+                                <label htmlFor="top5_cheap" className="text-lg font-semibold">Filter by Lowest 5</label>
                             </li>
                         </ul>
                     </div>
