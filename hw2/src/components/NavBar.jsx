@@ -62,8 +62,6 @@ function NavBar() {
                             <Link to="/about" className="block py-2 sm:py-0 sm:ml-4 sm:mr-4">About Us</Link>
                             <span className="hidden sm:block">|</span>
                             <Link to="/contact" className="block py-2 sm:py-0 sm:ml-4">Contact</Link>
-                            <span className="hidden sm:block">|</span>
-                            <Link to="/test" className="block py-2 sm:py-0 sm:ml-4">test</Link>
                         </nav>
                     </div>
                     {/* Button to toggle between dark mode and light mode */}
@@ -81,7 +79,6 @@ function NavBar() {
                         <Link to="/international" className="block py-2 text-center">International Energy Data</Link>
                         <Link to="/about" className="block py-2 text-center">About Us</Link>
                         <Link to="/contact" className="block py-2 text-center">Contact</Link>
-                        <Link to="/test" className="block py-2 text-center">test</Link>
                     </div>
                 </nav>
             </div>
