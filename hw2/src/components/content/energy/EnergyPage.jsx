@@ -1,6 +1,7 @@
 import { energyData } from "../../../utils/DataUtils"
 import { useState, useEffect, useRef } from "react"
 import { getLowest_returnAmount, getHighest_returnAmount } from "../../../utils/DataUtils"
+import { toggleStorage, elementInStorage } from "./EnergyPageUtils"
 import axios from "axios"
 import ChartComp from "./ChartComp"
 
@@ -18,12 +19,9 @@ function EnergyPage({energyType, OtherComponent}){
     const [loading, updateLoading] = useState(false);
 
     const [data, setData] = useState(null)
-    const [favourite, toggleFavourite] = useState(false)
     const [fetchedData, updateFetchedData] = useState([])
     useEffect(()=>{
         setData(energyData[energyType])
-        let storage = localStorage.getItem("favourites")
-        toggleFavourite(storage.includes(energyType))
     }, [energyType])
 
     const onInfoSelect = ()=>{
@@ -39,17 +37,12 @@ function EnergyPage({energyType, OtherComponent}){
         showDataBtn.current.hidden = !(top5.current.checked || lowest5.current.checked)
     }
 
-    const favouriteClick = ()=>{
-        let storage = localStorage.getItem("favourites")
-        if (!storage)
-            storage = ""
-        if (favourite){
-            let newValue = storage.replace(energyType + ",", "")
-            localStorage.setItem("favourites", newValue)
-        }else{
-            localStorage.setItem("favourites", storage + energyType + ",")
-        }
-        toggleFavourite(!favourite)
+    const favouriteClick = (event, element)=>{
+        toggleStorage(element)
+        if (elementInStorage(element))
+            event.target.src = "./yellow_star.png"
+        else
+            event.target.src = "./white_star.png"
     }
 
     const fetchData = async () => {
@@ -109,9 +102,6 @@ function EnergyPage({energyType, OtherComponent}){
     return(<>
         <div hidden={data? false : true}>
                 {/* Title and Description Section */}
-                <img onClick={favouriteClick} alt="Toggle Favourite" width={50} height={50} src={favourite ? "yellow_star.png" : "white_star.png"}
-                 className="absolute top-13 right-2 cursor-pointer"
-                 title="Toggle Favourite" />
                 <div className="rounded-lg shadow-lg p-6 dark:bg-[#003C43] dark:text-white mb-8">
                     <h1 className="text-3xl font-bold text-center mb-4">{data?.title? data.title: ""}</h1>
                     <p className="text-lg text-center">
@@ -193,6 +183,10 @@ function EnergyPage({energyType, OtherComponent}){
                 <center><img src="./loading.gif" width={100} height={100} hidden={!loading} alt="Loading" /></center>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4" hidden={loading}>
                     {fetchedData.map((element, index) => 
+                    <div className="relative block" key={index}>
+                        <img onClick={(event)=> favouriteClick(event, element)} alt="Toggle Favourite" width={30} height={30} src={elementInStorage(element) ? "yellow_star.png" : "white_star.png"}
+                            className="absolute top-13 right-2 cursor-pointer"
+                            title="Toggle Favourite" />
                         <ChartComp 
                             key={index}
                             title={element.chartTitle}
@@ -201,7 +195,8 @@ function EnergyPage({energyType, OtherComponent}){
                             label={element.label}
                             value={element.valueName}
                             id={index}
-                        /> )
+                        />
+                        </div> )
                 }
                        
             </div>

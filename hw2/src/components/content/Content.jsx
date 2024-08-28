@@ -5,6 +5,7 @@ import International from './energy/International';
 import About from './About';
 import Contact from './Contact';
 import EnergyPage from './energy/EnergyPage';
+import Favourites from './Favourites';
 
 // Content component handles routing for different pages
 function Content() {
@@ -16,6 +17,7 @@ function Content() {
                 <Route path='/electricity' element={<EnergyPage energyType='electricity'/>} />
                 <Route path='/natural_gas' element={<EnergyPage energyType='natural_gas' />} />
                 <Route path='/international' element={<International />} />
+                <Route path='/favourites' element={<Favourites />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />
             </Routes>
