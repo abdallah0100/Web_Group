@@ -18,9 +18,12 @@ function EnergyPage({energyType, OtherComponent}){
     const [loading, updateLoading] = useState(false);
 
     const [data, setData] = useState(null)
+    const [favourite, toggleFavourite] = useState(false)
     const [fetchedData, updateFetchedData] = useState([])
     useEffect(()=>{
         setData(energyData[energyType])
+        let storage = localStorage.getItem("favourites")
+        toggleFavourite(storage.includes(energyType))
     }, [energyType])
 
     const onInfoSelect = ()=>{
@@ -34,6 +37,19 @@ function EnergyPage({energyType, OtherComponent}){
 
     const onDataRankingSelect = ()=>{
         showDataBtn.current.hidden = !(top5.current.checked || lowest5.current.checked)
+    }
+
+    const favouriteClick = ()=>{
+        let storage = localStorage.getItem("favourites")
+        if (!storage)
+            storage = ""
+        if (favourite){
+            let newValue = storage.replace(energyType + ",", "")
+            localStorage.setItem("favourites", newValue)
+        }else{
+            localStorage.setItem("favourites", storage + energyType + ",")
+        }
+        toggleFavourite(!favourite)
     }
 
     const fetchData = async () => {
@@ -93,6 +109,9 @@ function EnergyPage({energyType, OtherComponent}){
     return(<>
         <div hidden={data? false : true}>
                 {/* Title and Description Section */}
+                <img onClick={favouriteClick} alt="Toggle Favourite" width={50} height={50} src={favourite ? "yellow_star.png" : "white_star.png"}
+                 className="absolute top-13 right-2 cursor-pointer"
+                 title="Toggle Favourite" />
                 <div className="rounded-lg shadow-lg p-6 dark:bg-[#003C43] dark:text-white mb-8">
                     <h1 className="text-3xl font-bold text-center mb-4">{data?.title? data.title: ""}</h1>
                     <p className="text-lg text-center">
