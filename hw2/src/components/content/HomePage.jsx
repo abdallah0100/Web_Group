@@ -1,5 +1,4 @@
 import React from 'react';
-import Footer from './Footer';
 
 // HomePage component
 function HomePage() {
@@ -11,7 +10,7 @@ function HomePage() {
             <div className="absolute bottom-20 left-20 w-72 h-72 bg-gray-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
             
             {/* Main content area */}
-            <div className="flex flex-col items-center justify-between min-h-screen p-4 bg-white bg-opacity-75 relative z-10 dark:bg-gray-900 dark:bg-opacity-75">
+            <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white bg-opacity-75 relative z-10 dark:bg-gray-900 dark:bg-opacity-75">
                 <header className="text-center my-8">
                     <h1 className="text-4xl font-bold text-[#003C43] dark:text-gray-200">Energy Consumption Monitor</h1>
                 </header>
@@ -34,9 +33,6 @@ function HomePage() {
                         </p>
                     </section>
                 </main>
-                
-                {/* Footer component */}
-                <Footer />
             </div>
         </div>
     );
