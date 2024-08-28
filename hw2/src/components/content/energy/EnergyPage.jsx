@@ -1,8 +1,9 @@
-import { energyData } from "../../../utils/DataUtils";
-import { useState, useEffect, useRef } from "react";
-import { getLowest_returnAmount, getHighest_returnAmount } from "../../../utils/DataUtils";
-import axios from "axios";
-import ChartComp from "./ChartComp";
+import { energyData } from "../../../utils/DataUtils"
+import { useState, useEffect, useRef } from "react"
+import { getLowest_returnAmount, getHighest_returnAmount } from "../../../utils/DataUtils"
+import { toggleStorage, elementInStorage } from "./EnergyPageUtils"
+import axios from "axios"
+import ChartComp from "./ChartComp"
 
 // EnergyPage component
 function EnergyPage({ energyType, OtherComponent }) {
@@ -21,9 +22,10 @@ function EnergyPage({ energyType, OtherComponent }) {
     // State to manage loading status
     const [loading, updateLoading] = useState(false);
 
-    // State to hold energy data and favourite status
-    const [data, setData] = useState(null);
-    const [favourite, toggleFavourite] = useState(false);
+    const [data, setData] = useState(null)
+    useEffect(()=>{
+        setData(energyData[energyType])
+    }, [energyType])
 
     // State to hold fetched data
     const [fetchedData, updateFetchedData] = useState([]);
@@ -31,8 +33,6 @@ function EnergyPage({ energyType, OtherComponent }) {
     // Effect to initialize data based on energyType and manage favourites
     useEffect(() => {
         setData(energyData[energyType]);
-        let storage = localStorage.getItem("favourites");
-        toggleFavourite(storage.includes(energyType));
     }, [energyType]);
 
     // Show year input section when info is selected
@@ -41,7 +41,14 @@ function EnergyPage({ energyType, OtherComponent }) {
         defaultSelectValue.current.disabled = true;
     };
 
-    // Show checkboxes for data ranking when year is input
+    const favouriteClick = (event, element)=>{
+        toggleStorage(element)
+        if (elementInStorage(element))
+            event.target.src = "./yellow_star.png"
+        else
+            event.target.src = "./white_star.png"
+    }
+
     const onYearInput = () => {
         checkBoxDiv.current.hidden = false;
     };
@@ -49,19 +56,6 @@ function EnergyPage({ energyType, OtherComponent }) {
     // Show the button to fetch data when a ranking option is selected
     const onDataRankingSelect = () => {
         showDataBtn.current.hidden = !(top5.current.checked || lowest5.current.checked);
-    };
-
-    // Handle favourite button click
-    const favouriteClick = () => {
-        let storage = localStorage.getItem("favourites");
-        if (!storage) storage = "";
-        if (favourite) {
-            let newValue = storage.replace(energyType + ",", "");
-            localStorage.setItem("favourites", newValue);
-        } else {
-            localStorage.setItem("favourites", storage + energyType + ",");
-        }
-        toggleFavourite(!favourite);
     };
 
     // Fetch data based on user input and selections
@@ -124,15 +118,6 @@ function EnergyPage({ energyType, OtherComponent }) {
         <>
             <div hidden={!data}>
                 {/* Title and Description Section */}
-                <img 
-                    onClick={favouriteClick} 
-                    alt="Toggle Favourite" 
-                    width={50} 
-                    height={50} 
-                    src={favourite ? "yellow_star.png" : "white_star.png"}
-                    className="absolute top-13 right-2 cursor-pointer"
-                    title="Toggle Favourite" 
-                />
                 <div className="rounded-lg shadow-lg p-6 dark:bg-[#003C43] dark:text-white mb-8">
                     <h1 className="text-3xl font-bold text-center mb-4">
                         {data?.title || ""}
@@ -236,7 +221,11 @@ function EnergyPage({ energyType, OtherComponent }) {
 
                 {/* Charts Display */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4" hidden={loading}>
-                    {fetchedData.map((element, index) => (
+                    {fetchedData.map((element, index) => 
+                    <div className="relative block" key={index}>
+                        <img onClick={(event)=> favouriteClick(event, element)} alt="Toggle Favourite" width={30} height={30} src={elementInStorage(element) ? "yellow_star.png" : "white_star.png"}
+                            className="absolute top-13 right-2 cursor-pointer"
+                            title="Toggle Favourite" />
                         <ChartComp 
                             key={index}
                             title={element.chartTitle}
@@ -245,8 +234,10 @@ function EnergyPage({ energyType, OtherComponent }) {
                             label={element.label}
                             value={element.valueName}
                             id={index}
-                        /> 
-                    ))}
+                        />
+                    </div> 
+                    )}
+                       
                 </div>
             </div>
 
