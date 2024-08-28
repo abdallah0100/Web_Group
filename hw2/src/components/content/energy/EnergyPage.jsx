@@ -63,7 +63,7 @@ function EnergyPage({ energyType, OtherComponent }) {
         // Validate year inputs
         if (startYear.current.value > 2024 || endYear.current.value > 2024 || startYear.current.value >= endYear.current.value 
             || startYear.current.value < 2010 || endYear.current.value < 2010) {
-            msgLabel.current.textContent = "Invalid year input, please input 2010-2024";
+            msgLabel.current.textContent = "Invalid year input, please input different years from 2010-2024";
             msgLabel.current.hidden = false;
             return;
         }

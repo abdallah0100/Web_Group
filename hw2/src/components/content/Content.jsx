@@ -14,8 +14,8 @@ function Content() {
             {/* Routes for different pages */}
             <Routes>
                 <Route path='/' element={<HomePage />} />
-                <Route path='/electricity' element={<EnergyPage energyType='electricity'/>} />
-                <Route path='/natural_gas' element={<EnergyPage energyType='natural_gas' />} />
+                <Route path='/electricity' element={<EnergyPage key="electricity" energyType='electricity'/>} />
+                <Route path='/natural_gas' element={<EnergyPage key="gas" energyType='natural_gas' />} />
                 <Route path='/international' element={<International />} />
                 <Route path='/favourites' element={<Favourites />} />
                 <Route path='/about' element={<About />} />
